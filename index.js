@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const Post = require("./model/post")
 const app = express();
+const port = 8009 || process.env.PORT
 const mongoose = require("mongoose")
 const path = require("path");
 const fileUpload = require("express-fileupload");
@@ -102,4 +103,4 @@ mongoose.connect(uri,(err) => {
     }
 })
 
-app.listen(8009,()=>{console.log("Server is up and running at port no. 8009")})
+app.listen(port,()=>{console.log(`Server is up and running at port no. ${port}`)})
