@@ -39,7 +39,7 @@ app.post("/api" ,  (req,res)=>{
             //try
             
                 const post = await Post.create({
-                    image:"https://instaclone-crva.onrender.com/images"+img,
+                    image:"https://instaclone-crva.onrender.com/images/"+img,
                     auther,
                     location,
                     desc,
