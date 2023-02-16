@@ -1,106 +1,46 @@
 const express = require("express");
 const cors = require("cors");
-const Post = require("./model/post")
+const db = require("mongoose");
+const PORT = 80 || process.env.PORT;
+const postRoute = require("./routes/post");
+const userRoute = require("./routes/user");
+const jwt = require("jsonwebtoken");
+const Secret = "INSTACLONEAPP";
+
+
 const app = express();
-const port = 8009 || process.env.PORT
-const mongoose = require("mongoose")
-const path = require("path");
-const fileUpload = require("express-fileupload");
-
-
+app.use(cors()); 
 app.use(express.json());
 
-app.use(fileUpload());
-app.use(cors())
+app.use("/post", (req, res, next) => {
+  const token = req.headers.authorization;
+  if (token) {
+    jwt.verify(token, Secret, function (err, decoded) {
+      if (err) {
+        console.log(err);
+        return res.status(403).json({
+          status: "Failed",
+          message: "Token is not valid",
+        });
+        
+      }
+      req.user = decoded.data;
+      next(); 
+    });
+  } else {
+    res.status(403).json({
+      status: "Failed",
+      message: "User is not authenticated",
+    }); 
+  }
+});
+app.use("/user", userRoute)
+app.use("/post", postRoute)
 
-// mongoose.set('strictQuery', true)
 
-const uri = `mongodb+srv://Asrazareen:asra1999@cluster0.6bipnt6.mongodb.net/?retryWrites=true&w=majority`
+db.connect(
+  "mongodb+srv://Asrazareen:asra1999@cluster0.6bipnt6.mongodb.net/?retryWrites=true&w=majority",
+  () => console.log("Connected to db")
+);
 
-
-// app.get("/", async (req,res)=>{
-//     res.status(200).send("This is start page")
-// })
-
-
-app.post("/api" ,  (req,res)=>{
-    const {auther,location,desc,likes} = req.body
-
-    // console.log(req.body)
-    // console.log(req.files);
-    const {imageFile} = req.files
-    const   img = Date.now()+imageFile.name;
-    imageFile.mv('./images/'+ img,async (err) => {
-        if(err){
-            res.json({message:err})
-        } 
-        else{
-
-            //try
-            
-                const post = await Post.create({
-                    image:"https://instaclone-crva.onrender.com/images/"+img,
-                    auther,
-                    location,
-                    desc,
-                    likes,
-            
-                })
-            
-                res.json({
-                    message:"everthing is fine",
-                    post,
-            
-                })
-                // res.redirect('/')
-            
-            // catch(e){
-            //     console.log(e)
-            //     message:e.message
-                
-            // }
-
-        }
-    })
-  
-  
-
-    // console.log(imageFile);
-})
-
-app.get("/", async (req, res) => {
-    try{
-        const post =await Post.find().sort({createdAt:-1});
-        // console.log(post)
-        res.json(
-            post
-            )
-    }
-    catch(e){
-        res.status(400).json({
-            message:e.message
-        })
-    }
-    
-})
-
-app.get("/images/:fileName", async (req, resp) => {
-    // console.log(`./uploads/${req.params.fileName}`)
-    resp.sendFile(path.join(__dirname, `./images/${req.params.fileName}`))
-})
-
-app.get("*", async (req,res)=>{
-    res.status(404).send("API not found")
-})
-
-mongoose.connect(uri,(err) => {
-    if(err){
-        console.log("connection to mongodb failed")
-    }
-    else
-    {
-        console.log("connection to mongodb success")
-    }
-})
-
-app.listen(port,()=>{console.log(`Server is up and running at port no. ${port}`)})
+app.listen(PORT, () => console.log(`Port is open at ${PORT}`));
