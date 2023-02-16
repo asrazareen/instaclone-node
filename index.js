@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const db = require("mongoose");
-const PORT = 8080 || process.env.PORT;
+const PORT = process.env.PORT || 8080;
 const postRoute = require("./routes/post");
 const userRoute = require("./routes/user");
 const jwt = require("jsonwebtoken");
@@ -22,7 +22,7 @@ app.use("/post", (req, res, next) => {
           status: "Failed",
           message: "Token is not valid",
         });
-        
+         
       }
       req.user = decoded.data;
       next(); 
@@ -43,4 +43,4 @@ db.connect(
   () => console.log("Connected to db")
 );
 
-app.listen(PORT, () => console.log(`Port is open at ${PORT}`));
+app.listen(PORT, () => console.log(`Port is open at ${PORT}`)); 
