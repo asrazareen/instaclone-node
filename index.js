@@ -33,7 +33,7 @@ app.use("/post", (req, res, next) => {
       message: "User is not authenticated",
     }); 
   }
-});
+}); 
 app.use("/user", userRoute)
 app.use("/post", postRoute)
 

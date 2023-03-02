@@ -12,7 +12,7 @@ app.use(fileUpload());
 
 app.get("/user", async (req, res) => {
   const userid = req.user;
-  const user = await User.findOne({ _id: userid });
+  const user = await User.findOne({ _id: userid }); 
   res.status(200).json({
     name: user.name
   });  
