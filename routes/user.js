@@ -18,7 +18,6 @@ router.post(
   "/register",
   body("email").isEmail(),
   body("name").isAlphanumeric().isLength({ min: 4 }),
-  body("city").isLength({ min: 4}),
   body("password").isLength({ min: 6}),
   async (req, res) => {
     try {
@@ -32,10 +31,6 @@ router.post(
         } else if (error.param == "name") {
           return res.status(400).json({
             message: "Invalid Name",
-          });
-        } else if (error.param == "city") { 
-          return res.status(400).json({
-            message: "Invalid City",
           });
         } else {
           return res.status(400).json({
@@ -93,6 +88,7 @@ router.post(
 
 router.post("/login", body("email").isEmail(), async (req, res) => {
   try {
+    console.log
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
