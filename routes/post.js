@@ -24,15 +24,17 @@ app.get("/", async (req, res) => {
 });
 
 app.post("/", async (req, res) => {
-  const { auther, location, desc, likes, image } = req.body; 
-//   console.log(req.body)
-  await POST.create({
-    auther: auther,
+  const {  location, desc, likes, image } = req.body; 
+  const id = req.user
+  const user = await User.findOne({_id:id})
+ await POST.create({
+    auther: user.name,
     location: location,
     desc: desc,
     likes: likes, 
     image: image,
   });
+  
   res.json({
     message: "Post Successful",
   });
@@ -69,7 +71,7 @@ app.delete("/remove/:id", async (req, res) => {
 });
 
 app.get("/userDetails/:name", async (req, res) => {
-  const user = await USER.findOne({ name: req.params.name });
+  const user = await User.findOne({ name: req.params.name });
   const posts = await POST.find({ name: req.params.name });
   res.json({
     user,
