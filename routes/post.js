@@ -11,7 +11,7 @@ app.use(cors());
 app.use(fileUpload()); 
 
 app.get("/user", async (req, res) => {
-  const userid = req.user;
+  const userid = req.user; 
   const user = await User.findOne({ _id: userid });   
   res.status(200).json({
     name: user.name
@@ -43,31 +43,38 @@ app.get("/username",async(req,res) => {
     res.json(data);
 })
 
-// app.post("/like/:id", async (req, res) => {
-//   const userid = req.user;
-//   const post = await POST.findOne({ _id: req.params.id });
-//   const index = post.like.indexOf(userid);
-//   if (index != -1) {  
-//     await POST.updateOne({ _id: req.params.id }, { $pull: { like: userid } });
-//   } else {
-//     await POST.updateOne({ _id: req.params.id }, { $push: { like: userid } });
-//   }
-// });
+app.post("/like/:id", async (req, res) => {
+  const userid = req.user;
+  const post = await POST.findOne({ _id: req.params.id });
+  //console.log(post.likes)
+  // let count =0;
+  // if(count = 0){
+  //   await post.updateOne({_id:req.params.id} , {$set : {likes:post.likes+1}});
+  // }else{
+  //   await post.updateOne({_id:req.params.id} , {$set : {likes:post.likes-1}})
+  // }
+  const index = post.likes.indexOf(userid);
+  if (index != -1) {  
+    await POST.updateOne({ _id: req.params.id }, { $pull: { like: userid } });
+  } else {
+    await POST.updateOne({ _id: req.params.id }, { $push: { like: userid } });
+  }
+});
 
-// app.delete("/remove/:id", async (req, res) => {
-//   await POST.deleteOne({ _id: req.params.id });
-//     res.json({
-//       massage: "Succesfully deleted post"
-//     });
-// });
+app.delete("/remove/:id", async (req, res) => {
+  await POST.deleteOne({ _id: req.params.id });
+    res.json({
+      massage: "Succesfully deleted post"
+    });
+});
 
-// app.get("/userDetails/:name", async (req, res) => {
-//   const user = await USER.findOne({ name: req.params.name });
-//   const posts = await POST.find({ name: req.params.name });
-//   res.json({
-//     user,
-//     posts
-//   })
-// });
+app.get("/userDetails/:name", async (req, res) => {
+  const user = await USER.findOne({ name: req.params.name });
+  const posts = await POST.find({ name: req.params.name });
+  res.json({
+    user,
+    posts
+  })
+});
 
 module.exports = app;  

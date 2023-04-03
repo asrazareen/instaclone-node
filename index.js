@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const db = require("mongoose");
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8090;
 const postRoute = require("./routes/post");
 const userRoute = require("./routes/user");
 const jwt = require("jsonwebtoken");
